@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-17T15:42:47.856Z",
+  "generatedAt": "2026-09-17T16:54:56.630Z",
   "cafes": [
     {
       "id": "w1095370929",
@@ -1111,6 +1111,28 @@
       "lon": 29.0952829,
       "address": "Prof. Dr. Ali Nihat Tarlan Caddesi",
       "neighbourhood": "Bostancı Mahallesi",
+      "openingHours": null,
+      "wifi": true,
+      "outdoorSeating": true,
+      "wheelchair": false,
+      "vegan": false,
+      "takeaway": false,
+      "website": null,
+      "instagram": null,
+      "brand": null,
+      "cuisine": null,
+      "score": 6
+    },
+    {
+      "id": "n14173286085",
+      "osmType": "node",
+      "osmId": 14173286085,
+      "name": "Espressolab",
+      "district": "besiktas",
+      "lat": 41.077393,
+      "lon": 29.0438972,
+      "address": null,
+      "neighbourhood": null,
       "openingHours": null,
       "wifi": true,
       "outdoorSeating": true,
