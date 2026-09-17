@@ -1,6 +1,6 @@
 // Fetches cafes from the Overpass API and writes data/cafes.json.
 // Usage: npm run fetch-data
-import { writeFile, mkdir } from "node:fs/promises";
+import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { districts } from "../lib/districts.js";
 import { scoreCafe } from "../lib/score.js";
 
@@ -13,6 +13,10 @@ const OUTPUT = new URL("../data/cafes.json", import.meta.url);
 
 // Rough Istanbul bounding box, guards against same-named areas elsewhere.
 const ISTANBUL_BBOX = { minLat: 40.8, maxLat: 41.4, minLon: 28.0, maxLon: 29.9 };
+
+// A district whose cafe count drops below this share of the previous run is
+// treated as a bad Overpass response.
+const MIN_KEEP_RATIO = 0.5;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -84,6 +88,15 @@ function normalize(element, district) {
   return cafe;
 }
 
+async function readPreviousCafes() {
+  try {
+    const data = JSON.parse(await readFile(OUTPUT, "utf8"));
+    return data.cafes ?? [];
+  } catch {
+    return [];
+  }
+}
+
 function inIstanbul({ lat, lon }) {
   return (
     lat >= ISTANBUL_BBOX.minLat &&
@@ -109,6 +122,19 @@ async function main() {
   }
 
   cafes.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name, "tr"));
+
+  // Overpass sometimes answers with an empty or partial result instead of an
+  // error. Never let that overwrite good data.
+  const previous = await readPreviousCafes();
+  for (const district of districts) {
+    const before = previous.filter((cafe) => cafe.district === district.slug).length;
+    const after = cafes.filter((cafe) => cafe.district === district.slug).length;
+    if (after === 0 || after < before * MIN_KEEP_RATIO) {
+      throw new Error(
+        `${district.name}: got ${after} cafes, had ${before}. Keeping existing data/cafes.json.`,
+      );
+    }
+  }
 
   await mkdir(new URL("../data/", import.meta.url), { recursive: true });
   await writeFile(
