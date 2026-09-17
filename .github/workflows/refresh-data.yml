@@ -1,0 +1,41 @@
+name: Refresh cafe data
+
+on:
+  schedule:
+    # Every Monday at 03:00 UTC (06:00 in Istanbul)
+    - cron: "0 3 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      # The script only uses Node built-ins, so no npm install is needed.
+      - name: Fetch cafes from Overpass
+        run: npm run fetch-data
+
+      - name: Commit updated data
+        run: |
+          if git diff --quiet -- data/cafes.json; then
+            echo "No changes to data/cafes.json"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/cafes.json
+          git commit -m "chore(data): refresh cafes from OpenStreetMap"
+          git push
