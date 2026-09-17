@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "fetch-data": "node scripts/fetch-cafes.mjs"
   },
   "dependencies": {
     "next": "16.3.5",
@@ -16,5 +17,6 @@
   "devDependencies": {
     "eslint": "^9",
     "eslint-config-next": "16.3.5"
-  }
+  },
+  "type": "module"
 }
