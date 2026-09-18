@@ -1,5 +1,6 @@
 import { MAX_SCORE } from "@/lib/score";
 import { directionsUrl, osmUrl, websiteUrl } from "@/lib/cafes";
+import StarRating from "./StarRating";
 import styles from "./CafeCard.module.css";
 
 function Features({ cafe }) {
@@ -41,6 +42,12 @@ export default function CafeCard({ cafe, rank }) {
       {cafe.openingHours && <p className={styles.meta}>🕒 {cafe.openingHours}</p>}
 
       <Features cafe={cafe} />
+
+      <StarRating
+        cafeId={cafe.id}
+        ratingAvg={cafe.ratingAvg}
+        ratingCount={cafe.ratingCount}
+      />
 
       <div className={styles.links}>
         <a href={directionsUrl(cafe)} target="_blank" rel="noopener noreferrer">
