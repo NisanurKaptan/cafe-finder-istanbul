@@ -85,12 +85,18 @@ export default function StarRating({ cafeId, ratingAvg = 0, ratingCount = 0 }) {
         ))}
       </div>
 
+      {/* The card header already shows the average, so this line is about the
+          visitor's own vote. */}
       <p className={styles.summary}>
-        {average.count > 0
-          ? `${average.avg.toFixed(1)} · ${average.count} oy`
-          : "Henüz oy yok"}
-        {myStars && status !== "error" && <span className={styles.mine}> · senin oyun: {myStars}</span>}
-        {status === "error" && <span className={styles.error}> · oy kaydedilemedi</span>}
+        {status === "error" ? (
+          <span className={styles.error}>Oy kaydedilemedi, tekrar dene</span>
+        ) : myStars ? (
+          <span className={styles.mine}>
+            Senin oyun: {myStars} · {average.avg.toFixed(1)} ortalama ({average.count} oy)
+          </span>
+        ) : (
+          "Puan ver"
+        )}
       </p>
     </div>
   );

@@ -31,9 +31,15 @@ export default function CafeCard({ cafe, rank }) {
     <article className={styles.card}>
       <div className={styles.top}>
         <span className={styles.rank}>#{rank}</span>
-        <span className={styles.score} title="Özellik skoru">
-          {cafe.score}/{MAX_SCORE}
-        </span>
+        {cafe.ratingCount > 0 ? (
+          <span className={styles.score} title={`${cafe.ratingCount} ziyaretçi puanı`}>
+            ★ {cafe.ratingAvg.toFixed(1)} · {cafe.ratingCount}
+          </span>
+        ) : (
+          <span className={styles.featureScore} title="Özellik skoru: Wi-Fi, dış mekân, açılış saatleri, bağımsızlık">
+            {cafe.score}/{MAX_SCORE}
+          </span>
+        )}
       </div>
 
       <h2 className={styles.name}>{cafe.name}</h2>
